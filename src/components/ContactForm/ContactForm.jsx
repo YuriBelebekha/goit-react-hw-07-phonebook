@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getContacts, addContact } from '../../redux/contactsSlice';
+import { useState } from 'react';
+import {
+  useGetContactsQuery,
+  useAddContactMutation,
+} from 'redux/contactsSlice';
 import shortid from 'shortid';
+import { toast } from 'react-toastify';
 import css from './ContactForm.module.css';
+import { ToastOptions } from 'services/toast-options';
 
 function ContactForm() {
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
-  const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const [phone, setPhone] = useState(''); 
+  const { data: contacts } = useGetContactsQuery();
+  const [addContact] = useAddContactMutation();
 
   const handleChange = e => {
     const { name, value } = e.currentTarget;
@@ -19,7 +23,7 @@ function ContactForm() {
         break;
       
       case 'number':
-        setNumber(value);
+        setPhone(value);
         break;
       
       default:
@@ -32,7 +36,7 @@ function ContactForm() {
     const contact = {
       id: shortid.generate(),
       name,
-      number,
+      phone,
     };
 
     const checkDuplicateContact = contacts.some(contact =>      
@@ -40,11 +44,13 @@ function ContactForm() {
     );
 
     checkDuplicateContact
-      ? alert(`${name.toUpperCase()} is already in contacts`)
-      : dispatch(addContact(contact));    
-
+      ? toast.error(`${name.toUpperCase()} is already in contacts`, ToastOptions)
+      : addContact(contact)
+        ? toast.success(`${name.toUpperCase()} added to phonebook`, ToastOptions)
+        : toast.error('Something went wrong... :(', ToastOptions);
+    
     setName('');
-    setNumber('');
+    setPhone('');   
   };
   
   return (
@@ -72,7 +78,7 @@ function ContactForm() {
           name="number"
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-          value={number}
+          value={phone}
           onChange={handleChange}
           required            
         />
