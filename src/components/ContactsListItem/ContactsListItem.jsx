@@ -17,14 +17,7 @@ const ContactsListItem = ({ id, name, phone }) => {
     <>      
       <li className={css.contactListItem} >
         <p>{name} - &#9743; {phone}</p>
-        <div>
-          {/* <button
-            type='button'
-            onClick={() => deleteContact(id)}
-            disabled={isDeleting}
-          >
-            {isDeleting ? 'Updating...' : 'Update'}
-          </button> */}
+        <div>          
           <button
             type='button'
             onClick={onClickDeleteContact}
@@ -39,59 +32,3 @@ const ContactsListItem = ({ id, name, phone }) => {
 };
 
 export default ContactsListItem;
-
-
-
-
-
-
-
-// import { useSelector } from 'react-redux';
-// import { getFilter } from 'redux/filterSlice';
-// import {
-//   useGetContactsQuery,
-//   useDeleteContactMutation,
-// } from 'redux/contactsSlice';
-// import shortid from 'shortid';
-// import css from './ContactsListItem.module.css';
-
-// const ContactsListItem = () => {    
-//   const filter = useSelector(getFilter);  
-//   const { data: contacts, isFetching } = useGetContactsQuery();
-//   const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
-
-//   const getFilteredContacts = () => {        
-//     const normalizedFilter = filter.toLowerCase();
-    
-//     if (contacts) {
-//       return contacts.filter(contact => 
-//         contact.name.toLowerCase().includes(normalizedFilter)
-//       );
-//     }
-//   };
-
-//   // console.log(getFilteredContacts())
-  
-//   return (
-//     <>
-//       {isFetching && <p>Loading...</p>}
-//       {contacts && getFilteredContacts().map(({id, name, phone}) => (
-//         <li
-//           key={shortid.generate()}
-//           className={css.contactListItem}
-//         >
-//           <p>{name}: {phone}</p>
-//           <button
-//             type='button'
-//             onClick={() => deleteContact(id)}
-//             disabled={isDeleting}
-//           >
-//             {isDeleting ? 'Deleting...' : 'Delete'}
-//           </button>
-//         </li>
-//       ))}
-//     </>
-//   )  
-// };
-
-// export default ContactsListItem;

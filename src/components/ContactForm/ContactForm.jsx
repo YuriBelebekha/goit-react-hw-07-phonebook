@@ -85,7 +85,7 @@ function ContactForm() {
       </label>
       <button className={css.btnAdd} type="submit">Add contact</button>
     </form>
-  )  
+  )
 }
 
 export default ContactForm;
