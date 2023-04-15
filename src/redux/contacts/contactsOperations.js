@@ -3,7 +3,7 @@ import * as contactsAPI from 'services/contacts-api';
 
 export const fetchContacts = createAsyncThunk(
   'contacts/fetchContacts',
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {    
     try {
       const contacts = await contactsAPI.fetchContacts();
       return contacts;
@@ -13,8 +13,8 @@ export const fetchContacts = createAsyncThunk(
   },
 );
 
-export const addContacts = createAsyncThunk(
-  'contacts/addContacts',
+export const addContact = createAsyncThunk(
+  'contacts/addContact',
   async (newContact, { rejectWithValue }) => {
     try {
       const addContact = await contactsAPI.fetchAddContact(newContact);
@@ -25,12 +25,12 @@ export const addContacts = createAsyncThunk(
   },
 );
 
-export const deleteContacts = createAsyncThunk(
-  'contacts/addContacts',
-  async (id, { rejectWithValue }) => {
-    try {
-      const addContact = await contactsAPI.fetchDeleteContact(id);
-      return addContact;
+export const deleteContact = createAsyncThunk(
+  'contacts/deleteContact',
+  async (id, { rejectWithValue }) => {    
+    try {      
+      const deleteContact = await contactsAPI.fetchDeleteContact(id);      
+      return deleteContact;
     } catch (error) {
       return rejectWithValue(error.message);
     }

@@ -1,19 +1,21 @@
 import { useState } from 'react';
-import {
-  useGetContactsQuery,
-  useAddContactMutation,
-} from 'redux/contactsSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectContacts } from 'redux/contacts/contactsSelectors';
+import { addContact } from 'redux/contacts/contactsOperations';
+
 import shortid from 'shortid';
 import { toast } from 'react-toastify';
 import css from './ContactForm.module.css';
 import { ToastOptions } from 'services/toast-options';
 
-function ContactForm() {
+function ContactForm() {  
+  const dispatch = useDispatch();
+  const contacts = useSelector(selectContacts);
+  const addContactData = data => { dispatch(addContact(data)) };
+  
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState(''); 
-  const { data: contacts } = useGetContactsQuery();
-  const [addContact] = useAddContactMutation();
-
+  const [phone, setPhone] = useState('');  
+  
   const handleChange = e => {
     const { name, value } = e.currentTarget;
 
@@ -38,19 +40,25 @@ function ContactForm() {
       name,
       phone,
     };
-
-    const checkDuplicateContact = contacts.some(contact =>      
+    
+    const checkDuplicateContact = contacts.some(contact =>
       contact.name.toLocaleLowerCase() === name.toLocaleLowerCase()
     );
-
-    checkDuplicateContact
-      ? toast.error(`${name.toUpperCase()} is already in contacts`, ToastOptions)
-      : addContact(contact)
-        ? toast.success(`${name.toUpperCase()} added to phonebook`, ToastOptions)
-        : toast.error('Something went wrong... :(', ToastOptions);
+    
+    if (checkDuplicateContact) {
+      return toast.error(`${name.toUpperCase()} is already in contacts`, ToastOptions);
+    };
+    if (!checkDuplicateContact) {
+      setTimeout(() => {
+        toast.success(`${name.toUpperCase()} added to phonebook`, ToastOptions);
+      }, 100);
+      addContactData(contact);      
+    } else {
+      toast.error('Something went wrong... :(', ToastOptions);
+    }
     
     setName('');
-    setPhone('');   
+    setPhone('');
   };
   
   return (
