@@ -1,21 +1,29 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { selectIsLoading } from 'redux/contacts/contactsSelectors';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { deleteContact } from 'redux/contacts/contactsOperations';
-
 import { toast } from 'react-toastify';
 import { ToastOptions } from 'services/toast-options';
 import css from './ContactsListItem.module.css';
 
 const ContactsListItem = ({ id, name, phone }) => {
   const dispatch = useDispatch();
-  const deleteContactData = () => dispatch(deleteContact(id));
-  const isLoading = useSelector(selectIsLoading); 
+  const deleteContactData = (id) => dispatch(deleteContact(id));
 
-  const onClickDeleteContact = () => {    
-    setTimeout(() => {
-      toast.info(`Contact ${name.toUpperCase()} was deleted`, ToastOptions)
-    }, 1000);
-    deleteContactData(id);    
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const onClickDeleteContact = () => {
+    setIsDeleting(true);
+    deleteContactData(id)
+      .then((response) => {        
+        if (response.error) {
+          toast.error(`Contact wasn't deleted: ${response.payload}`, ToastOptions);
+        } else {
+          toast.info(`Contact ${name.toUpperCase()} was deleted`, ToastOptions);
+        };
+      })      
+      .finally(() => {        
+        setIsDeleting(false);
+      });
   };
   
   return (    
@@ -25,9 +33,9 @@ const ContactsListItem = ({ id, name, phone }) => {
         <button
           type='button'
           onClick={onClickDeleteContact}
-          disabled={isLoading}            
+          disabled={isDeleting}            
         >
-          {isLoading ? 'Deleting...' : 'Delete'}
+          {isDeleting ? 'Deleting...' : 'Delete'}
         </button>
       </div>
     </li>

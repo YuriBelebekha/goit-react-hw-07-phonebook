@@ -7,7 +7,7 @@ import {
 
 const contactsInitialState = {
   contacts: [],
-  isLoading: false,
+  isLoading: false,  
   error: null,  
 };
 
@@ -21,8 +21,7 @@ export const contactsSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(fetchContacts.fulfilled, (state, { payload }) => {
-        state.contacts = payload;
-        console.log(payload)
+        state.contacts = payload;        
         state.isLoading = false;  
       })
       .addCase(fetchContacts.rejected, (state, { payload }) => {
